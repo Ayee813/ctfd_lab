@@ -23,7 +23,7 @@
 				</div>
 			{% endfor %}
 			<form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="form-horizontal">
-				<input type="hidden" name="nonce" value="{{ nonce }}">
+				<input type="hidden" name="nonce" value="{{ session.nonce }}">
 				{# This nonce is implemented specially in the route itself #}
 				<div class="form-group">
 					<label>
