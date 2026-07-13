@@ -7,6 +7,13 @@ services:
     environment:
       - UPLOAD_FOLDER=/var/uploads
       - DATABASE_URL=${DATABASE_URL}
+      # ping.py's readiness probe assumes a MySQL-style server where the target
+      # database may not exist yet and nulls out the dbname to test connectivity.
+      # On Postgres that makes libpq default to a dbname matching the user, which
+      # doesn't exist on Supabase, so it retries forever. Supabase's database
+      # already exists, so skip the probe and let `flask db upgrade` connect directly.
+      - SKIP_DB_PING=true
+      - SECRET_KEY=${SECRET_KEY}
       - REDIS_URL=redis://cache:6379
       - WORKERS=1
       - LOG_FOLDER=/var/log/CTFd
