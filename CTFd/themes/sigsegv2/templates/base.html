@@ -4,15 +4,15 @@
 	<title>{{ get_ctf_name() }}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="{{ url_for('views.themes', theme='sigsegv2', path='img/favicon.ico') }}"
+	<link rel="shortcut icon" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='img/favicon.ico') }}"
 		  type="image/x-icon">
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/vendor/bootstrap.min.css') }}">
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/vendor/font-awesome/fontawesome-fonts.css') }}" type='text/css'>
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/vendor/font-awesome/fontawesome-all.min.css') }}" type='text/css'>
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/vendor/font.css') }}"  type='text/css'>
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/jumbotron.css') }}">
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/sticky-footer.css') }}">
-	<link rel="stylesheet" href="{{ url_for('views.themes', theme='sigsegv2', path='css/base.css') }}">
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/vendor/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/vendor/font-awesome/fontawesome-fonts.css') }}" type='text/css'>
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/vendor/font-awesome/fontawesome-all.min.css') }}" type='text/css'>
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/vendor/font.css') }}"  type='text/css'>
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/jumbotron.css') }}">
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/sticky-footer.css') }}">
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='sigsegv2', path='css/base.css') }}">
 	{% block stylesheets %}{% endblock %}
 	{% for stylesheet in get_registered_stylesheets() %}
 		{% if stylesheet.startswith('http') %}
@@ -23,12 +23,12 @@
 			<link rel="stylesheet" type="text/css" href="{{ stylesheet }}">
 		{% endif %}
 	{% endfor %}
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/promise-polyfill.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/eventsource.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/fetch.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/CTFd.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/moment.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/nunjucks.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/promise-polyfill.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/eventsource.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/fetch.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/CTFd.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/moment.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/nunjucks.min.js') }}"></script>
 	<script type="text/javascript">
 		var script_root = "{{ request.script_root }}";
 		var csrf_nonce = "{{ nonce }}";
@@ -146,15 +146,15 @@
 		</div>
 	</footer>
 
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/jquery.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/markdown-it.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/bootstrap.bundle.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/howler.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/window-controller.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/style.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/utils.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/ezq.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/events.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/jquery.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/markdown-it.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/bootstrap.bundle.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/howler.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/window-controller.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/style.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/utils.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/ezq.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/events.js') }}"></script>
 	{% block scripts %}
 	{% endblock %}
 

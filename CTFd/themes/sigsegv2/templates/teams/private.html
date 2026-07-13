@@ -293,10 +293,10 @@
 		var team_captain = {{ (user.id == team.captain_id) | tojson }};
         var team_account_id = team_self ? "me" : team_id;
 	</script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/vendor/plotly.min.js') }}"></script>
-	<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/utils.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/vendor/plotly.min.js') }}"></script>
+	<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/utils.js') }}"></script>
 	{% if solves %}
-		<script src="{{ url_for('views.themes', theme='sigsegv2', path='js/team.js') }}"></script>
+		<script src="{{ url_for('views.themes_beta', theme='sigsegv2', path='js/team.js') }}"></script>
 	{% endif %}
 	<script>
         if (team_captain) {
