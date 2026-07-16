@@ -1,0 +1,557 @@
+/* ==========================================================================
+   Red Terminal — sigsegv2's fonts & colors on the hacker-terminal cyber grid.
+   Pure CSS: no canvas, no JS animation loops. Loads after core's main.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Palette — taken from the sigsegv2 theme (plain sRGB, no oklch needed)
+   -------------------------------------------------------------------------- */
+:root {
+  --rt-bg: #0a0a0a;            /* sigsegv2 html/body background */
+  --rt-fg: #9e9e9e;            /* sigsegv2 body text */
+  --rt-card: #000000;          /* sigsegv2 .bg-dark / .jumbotron */
+  --rt-neon: #ff0000;          /* sigsegv2 accent red */
+  --rt-neon-hover: #ff4d4d;
+  --rt-secondary: #1a1a1a;
+  --rt-muted-bg: #141414;
+  --rt-muted-fg: #6f6f6f;
+  --rt-border: #2b2b2b;
+  --rt-gray: #545454;          /* sigsegv2 theme gray */
+  --rt-info: #5b7290;          /* sigsegv2 .btn-info / .badge-info */
+  --rt-success: #a3d39c;       /* sigsegv2 valid input green */
+  --rt-danger: #d46767;        /* sigsegv2 invalid input red */
+
+  --rt-neon-rgb: 255, 0, 0;
+  --rt-bg-rgb: 10, 10, 10;
+  --rt-fg-rgb: 158, 158, 158;
+
+  /* Alpha steps for the background effects (same ceilings as hacker-terminal) */
+  --rt-neon-a55: rgba(255, 0, 0, 0.55);
+  --rt-neon-a40: rgba(255, 0, 0, 0.40);
+  --rt-neon-a35: rgba(255, 0, 0, 0.35);
+  --rt-neon-a30: rgba(255, 0, 0, 0.30);
+  --rt-neon-a14: rgba(255, 0, 0, 0.14);
+  --rt-neon-a07: rgba(255, 0, 0, 0.07);
+  --rt-neon-a05: rgba(255, 0, 0, 0.05);
+  --rt-bg-a95: rgba(10, 10, 10, 0.95);
+
+  /* Animation pacing — overridable from admin Theme Settings */
+  --rt-floor-duration: 2s;
+  --rt-beam-duration: 14s;
+  --rt-cell: 52px;
+
+  /* sigsegv2 font stacks */
+  --rt-font-body: "Lato", "LatoOffline", sans-serif;
+  --rt-font-display: "AerxTablets", sans-serif;
+  --rt-font-input: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. Bootstrap 5.3 variable remap (core theme is compiled Bootstrap)
+   -------------------------------------------------------------------------- */
+html.red-terminal[data-bs-theme="dark"] {
+  --bs-body-bg: var(--rt-bg);
+  --bs-body-bg-rgb: var(--rt-bg-rgb);
+  --bs-body-color: var(--rt-fg);
+  --bs-body-color-rgb: var(--rt-fg-rgb);
+  --bs-body-font-family: var(--rt-font-body);
+  --bs-emphasis-color: #cfcfcf;
+  --bs-emphasis-color-rgb: 207, 207, 207;
+  --bs-secondary-color: var(--rt-muted-fg);
+  --bs-secondary-bg: var(--rt-secondary);
+  --bs-tertiary-color: var(--rt-muted-fg);
+  --bs-tertiary-bg: var(--rt-muted-bg);
+  --bs-border-color: var(--rt-border);
+  --bs-border-color-translucent: var(--rt-border);
+  --bs-border-radius: 0;
+  --bs-border-radius-sm: 0;
+  --bs-border-radius-lg: 0;
+  --bs-border-radius-xl: 0;
+  --bs-primary: var(--rt-neon);
+  --bs-primary-rgb: var(--rt-neon-rgb);
+  --bs-danger: var(--rt-danger);
+  --bs-danger-rgb: 212, 103, 103;
+  --bs-info: var(--rt-info);
+  --bs-success: var(--rt-success);
+  --bs-link-color: var(--rt-neon);
+  --bs-link-color-rgb: var(--rt-neon-rgb);
+  --bs-link-hover-color: var(--rt-neon);
+  --bs-link-hover-color-rgb: var(--rt-neon-rgb);
+  --bs-heading-color: var(--rt-fg);
+  --bs-code-color: var(--rt-neon);
+
+  /* .bg-dark (navbar) goes full black, as in sigsegv2 */
+  --bs-dark-rgb: 0, 0, 0;
+}
+
+/* Root paints the canvas; body stays transparent so the fixed background
+   layer (a negative z-index child of body) shows through behind content. */
+html.red-terminal {
+  background-color: var(--rt-bg);
+}
+
+html.red-terminal body {
+  background-color: transparent;
+  font-family: var(--rt-font-body);
+}
+
+/* --------------------------------------------------------------------------
+   3. sigsegv2 typography & component styling
+   -------------------------------------------------------------------------- */
+.red-terminal h1,
+.red-terminal h2 {
+  font-family: var(--rt-font-display);
+  letter-spacing: 2px;
+  color: var(--rt-fg);
+  text-shadow: 0 0 18px var(--rt-neon-a14);
+}
+
+.red-terminal a {
+  color: var(--rt-neon);
+  text-decoration: none;
+}
+
+.red-terminal a:hover {
+  color: var(--rt-neon);
+  text-decoration: underline;
+}
+
+.red-terminal .navbar.bg-dark {
+  border-bottom: 1px solid var(--rt-border);
+  box-shadow: 0 1px 0 var(--rt-neon-a07), 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.red-terminal .navbar-brand {
+  font-family: var(--rt-font-display);
+  font-size: 1.9em;
+  color: var(--rt-neon) !important;
+  text-shadow: 0 0 12px var(--rt-neon-a35);
+}
+
+.red-terminal .nav-link {
+  font-family: var(--rt-font-display);
+  font-size: 1.7em;
+  color: var(--rt-neon) !important;
+}
+
+.red-terminal .nav-link:hover {
+  text-decoration: none;
+}
+
+/* Dark is the only mode: hide core's light/dark toggle (its script isn't loaded) */
+.red-terminal .theme-switch {
+  display: none !important;
+}
+
+/* Cards / panels: opaque black surfaces (sigsegv2), square corners */
+.red-terminal .card,
+.red-terminal .modal-content,
+.red-terminal .dropdown-menu,
+.red-terminal .list-group-item,
+.red-terminal .toast,
+.red-terminal .offcanvas {
+  --bs-card-bg: var(--rt-card);
+  --bs-modal-bg: var(--rt-card);
+  --bs-dropdown-bg: var(--rt-card);
+  --bs-list-group-bg: var(--rt-card);
+  --bs-toast-bg: var(--rt-card);
+  --bs-offcanvas-bg: var(--rt-card);
+  background-color: var(--rt-card);
+  border-color: var(--rt-border);
+  border-radius: 0 !important;
+}
+
+.red-terminal .card {
+  box-shadow: 0 0 0 1px var(--rt-neon-a07), 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.red-terminal .jumbotron {
+  background-color: var(--rt-card) !important;
+  color: var(--rt-neon);
+  border-radius: 0;
+  text-align: center;
+}
+
+/* Forms — sigsegv2 look: near-black fields, red text/focus, square corners */
+.red-terminal .form-control,
+.red-terminal .form-select,
+.red-terminal .input-group-text {
+  background: var(--rt-bg);
+  border-color: var(--rt-border);
+  border-radius: 0;
+  color: var(--rt-neon);
+  font-weight: 400;
+  font-family: var(--rt-font-input);
+  caret-color: var(--rt-neon);
+  -webkit-appearance: none;
+}
+
+.red-terminal .form-control::placeholder {
+  color: var(--rt-muted-fg);
+}
+
+.red-terminal .form-control:focus,
+.red-terminal .form-select:focus {
+  background-color: transparent;
+  border-color: var(--rt-neon);
+  color: var(--rt-neon);
+  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.35), 0 0 14px var(--rt-neon-a14);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.red-terminal .input-filled-valid {
+  background-color: transparent;
+  border-color: var(--rt-success);
+  box-shadow: 0 0 0 0.2rem var(--rt-success);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.red-terminal .input-filled-invalid {
+  background-color: transparent;
+  border-color: var(--rt-danger);
+  box-shadow: 0 0 0 0.2rem var(--rt-danger);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Buttons — sigsegv2's outlined style, in red */
+.red-terminal .btn {
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  padding: 8px 20px;
+  transition: all 0.3s;
+}
+
+.red-terminal .btn-primary {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--rt-neon);
+  --bs-btn-color: var(--rt-neon);
+  --bs-btn-hover-bg: var(--rt-neon);
+  --bs-btn-hover-border-color: var(--rt-neon);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--rt-neon);
+  --bs-btn-active-border-color: var(--rt-neon);
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: var(--rt-border);
+  --bs-btn-disabled-color: var(--rt-muted-fg);
+  --bs-btn-focus-shadow-rgb: var(--rt-neon-rgb);
+  border-width: 2px;
+}
+
+.red-terminal .btn-primary:hover {
+  box-shadow: 0 0 20px var(--rt-neon-a35);
+}
+
+.red-terminal .btn-outline-secondary,
+.red-terminal .btn-secondary {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--rt-gray);
+  --bs-btn-color: var(--rt-fg);
+  --bs-btn-hover-bg: var(--rt-gray);
+  --bs-btn-hover-border-color: var(--rt-gray);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--rt-gray);
+  --bs-btn-active-color: #fff;
+  border-width: 2px;
+}
+
+.red-terminal .btn-info {
+  background-color: var(--rt-info) !important;
+  border-color: var(--rt-info) !important;
+}
+
+.red-terminal .badge-info,
+.red-terminal .badge.bg-info {
+  background-color: var(--rt-info) !important;
+}
+
+.red-terminal .btn-danger {
+  --bs-btn-bg: var(--rt-danger);
+  --bs-btn-border-color: var(--rt-danger);
+}
+
+/* Tables (scoreboard) */
+.red-terminal .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--rt-fg);
+  --bs-table-border-color: var(--rt-border);
+  --bs-table-striped-bg: rgba(255, 0, 0, 0.03);
+  --bs-table-striped-color: var(--rt-fg);
+  --bs-table-hover-bg: var(--rt-neon-a07);
+  --bs-table-hover-color: var(--rt-fg);
+}
+
+.red-terminal table > thead > tr > td {
+  border-top: none !important;
+}
+
+/* Tabs / pagination */
+.red-terminal .nav-tabs {
+  --bs-nav-tabs-border-color: var(--rt-border);
+  --bs-nav-tabs-border-radius: 0;
+  --bs-nav-tabs-link-active-bg: var(--rt-card);
+  --bs-nav-tabs-link-active-color: var(--rt-neon);
+  --bs-nav-tabs-link-active-border-color: var(--rt-border) var(--rt-border) var(--rt-card);
+  --bs-nav-tabs-link-hover-border-color: var(--rt-border);
+}
+
+.red-terminal .nav-tabs .nav-link,
+.red-terminal .nav-pills .nav-link {
+  font-size: 1em;
+}
+
+.red-terminal .page-link {
+  background-color: var(--rt-card);
+  border-color: var(--rt-border);
+  border-radius: 0;
+  color: var(--rt-neon);
+}
+
+.red-terminal .page-item.active .page-link {
+  background-color: var(--rt-neon);
+  border-color: var(--rt-neon);
+  color: #fff;
+}
+
+/* Alerts — square corners as in sigsegv2 */
+.red-terminal .alert {
+  border-radius: 0 !important;
+  padding: 0.8em;
+}
+
+.red-terminal .alert-danger {
+  --bs-alert-bg: rgba(212, 103, 103, 0.12);
+  --bs-alert-border-color: var(--rt-danger);
+  --bs-alert-color: #e9a7a7;
+}
+
+.red-terminal .alert-success,
+.red-terminal .alert-info {
+  --bs-alert-bg: rgba(163, 211, 156, 0.10);
+  --bs-alert-border-color: var(--rt-success);
+  --bs-alert-color: var(--rt-success);
+}
+
+/* Code / pre */
+.red-terminal pre {
+  background-color: var(--rt-muted-bg);
+  border: 1px solid var(--rt-border);
+  border-radius: 0;
+  color: var(--rt-fg);
+  padding: 0.75rem 1rem;
+}
+
+.red-terminal ::selection {
+  background: var(--rt-neon-a35);
+  color: #fff;
+}
+
+.red-terminal .footer {
+  background-color: transparent;
+}
+
+/* Challenge buttons: sigsegv2 marks solved with its green */
+.red-terminal .challenge-button.solved-challenge {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--rt-success);
+  --bs-btn-color: var(--rt-success);
+}
+
+/* --------------------------------------------------------------------------
+   4. Background layer — identical geometry to hacker-terminal, tinted red
+   -------------------------------------------------------------------------- */
+#cyber-grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#cyber-grid-bg > * {
+  position: absolute;
+}
+
+/* 4.1 — 3D perspective floor (bottom 46% of the viewport) */
+.cyber-bg__floor-wrap {
+  top: 54%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  perspective: 460px;
+  perspective-origin: 50% 0%;
+  overflow: hidden;
+}
+
+.cyber-bg__floor {
+  position: absolute;
+  top: 0;
+  left: -70%;
+  right: -70%;
+  height: 400%;
+  transform-origin: 50% 0;
+  transform: rotateX(62deg) translateY(0);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--rt-neon-a30) 0,
+      var(--rt-neon-a30) 1.5px,
+      transparent 1.5px,
+      transparent var(--rt-cell)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--rt-neon-a30) 0,
+      var(--rt-neon-a30) 1.5px,
+      transparent 1.5px,
+      transparent var(--rt-cell)
+    );
+  animation: rt-floor-scroll var(--rt-floor-duration) linear infinite;
+  will-change: transform;
+}
+
+/* Translating by exactly one cell makes the loop seamless; transform-only
+   keeps it on the compositor. */
+@keyframes rt-floor-scroll {
+  from {
+    transform: rotateX(62deg) translateY(calc(-1 * var(--rt-cell)));
+  }
+  to {
+    transform: rotateX(62deg) translateY(0);
+  }
+}
+
+/* Distance fog: far grid melts into the horizon */
+.cyber-bg__fog {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--rt-bg-a95) 0%,
+    transparent 65%
+  );
+}
+
+/* 4.2 — Glowing horizon line */
+.cyber-bg__horizon {
+  top: 54%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--rt-neon-a55) 50%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 22px var(--rt-neon-a35),
+    0 0 80px var(--rt-neon-a14);
+}
+
+/* 4.3 — Sky grid, fading out toward the horizon */
+.cyber-bg__sky {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54%;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--rt-neon-a07) 0,
+      var(--rt-neon-a07) 1px,
+      transparent 1px,
+      transparent 44px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--rt-neon-a07) 0,
+      var(--rt-neon-a07) 1px,
+      transparent 1px,
+      transparent 44px
+    );
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+/* 4.4 — Ambient glow centered on the horizon + faint top wash */
+.cyber-bg__glow {
+  inset: 0;
+  background:
+    radial-gradient(55% 32% at 50% 54%, var(--rt-neon-a14) 0%, transparent 70%),
+    linear-gradient(to bottom, var(--rt-neon-a05) 0%, transparent 30%);
+}
+
+/* 4.5 — CRT scanlines */
+.cyber-bg__scanlines {
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.14) 0,
+    rgba(0, 0, 0, 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.4;
+}
+
+/* 4.6 — Scan beam sweeping down the viewport */
+.cyber-bg__beam {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rt-neon-a40);
+  box-shadow: 0 0 12px var(--rt-neon-a30), 0 0 32px var(--rt-neon-a14);
+  opacity: 0;
+  animation: rt-beam-sweep var(--rt-beam-duration) linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes rt-beam-sweep {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100vh, 0);
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Admin Theme Settings toggles (classes set once from window.init)
+   -------------------------------------------------------------------------- */
+.rt-no-bg #cyber-grid-bg,
+.rt-no-floor .cyber-bg__floor-wrap,
+.rt-no-sky .cyber-bg__sky,
+.rt-no-horizon .cyber-bg__horizon,
+.rt-no-glow .cyber-bg__glow,
+.rt-no-scanlines .cyber-bg__scanlines,
+.rt-no-beam .cyber-bg__beam {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. Reduced motion: freeze the floor, drop the beam
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cyber-bg__floor {
+    animation: none;
+  }
+
+  .cyber-bg__beam {
+    display: none;
+  }
+}
