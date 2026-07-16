@@ -1,0 +1,508 @@
+/* ==========================================================================
+   Hacker Terminal — dark green-on-black CTFd theme with a neon 3D cyber grid.
+   Pure CSS: no canvas, no JS animation loops. Loads after core's main.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Palette
+   Hex fallbacks first; exact oklch values applied where supported.
+   -------------------------------------------------------------------------- */
+:root {
+  --ht-bg: #0b120d;
+  --ht-fg: #dcf2e2;
+  --ht-card: #111a13;
+  --ht-neon: #27e068;
+  --ht-primary-fg: #0a1810;
+  --ht-secondary: #1e3626;
+  --ht-muted-bg: #1a2e20;
+  --ht-muted-fg: #8faf9a;
+  --ht-border: #2e4a38;
+  --ht-danger: #e5484d;
+  --ht-teal: #3ec8c2;
+  --ht-lime: #8ee055;
+  --ht-neon-hover: #4ae981;
+
+  --ht-neon-rgb: 39, 224, 104;
+  --ht-bg-rgb: 11, 18, 13;
+  --ht-fg-rgb: 220, 242, 226;
+  --ht-danger-rgb: 229, 72, 77;
+
+  /* Alpha steps used by the background effects (kept at spec ceilings) */
+  --ht-neon-a55: rgba(39, 224, 104, 0.55);
+  --ht-neon-a40: rgba(39, 224, 104, 0.40);
+  --ht-neon-a35: rgba(39, 224, 104, 0.35);
+  --ht-neon-a30: rgba(39, 224, 104, 0.30);
+  --ht-neon-a14: rgba(39, 224, 104, 0.14);
+  --ht-neon-a07: rgba(39, 224, 104, 0.07);
+  --ht-neon-a05: rgba(39, 224, 104, 0.05);
+  --ht-bg-a95: rgba(11, 18, 13, 0.95);
+
+  /* Animation pacing — overridable from admin Theme Settings */
+  --ht-floor-duration: 2s;
+  --ht-beam-duration: 14s;
+  --ht-cell: 52px;
+
+  --ht-font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@supports (color: oklch(0.5 0.1 150)) {
+  :root {
+    --ht-bg: oklch(0.14 0.018 150);
+    --ht-fg: oklch(0.92 0.03 150);
+    --ht-card: oklch(0.185 0.022 150);
+    --ht-neon: oklch(0.75 0.21 148);
+    --ht-primary-fg: oklch(0.15 0.04 150);
+    --ht-secondary: oklch(0.25 0.04 150);
+    --ht-muted-bg: oklch(0.22 0.03 150);
+    --ht-muted-fg: oklch(0.66 0.04 150);
+    --ht-border: oklch(0.32 0.05 150);
+    --ht-danger: oklch(0.65 0.21 25);
+    --ht-teal: oklch(0.72 0.13 190);
+    --ht-lime: oklch(0.8 0.17 130);
+    --ht-neon-hover: oklch(0.79 0.21 148);
+
+    --ht-neon-a55: oklch(0.75 0.21 148 / 0.55);
+    --ht-neon-a40: oklch(0.75 0.21 148 / 0.40);
+    --ht-neon-a35: oklch(0.75 0.21 148 / 0.35);
+    --ht-neon-a30: oklch(0.75 0.21 148 / 0.30);
+    --ht-neon-a14: oklch(0.75 0.21 148 / 0.14);
+    --ht-neon-a07: oklch(0.75 0.21 148 / 0.07);
+    --ht-neon-a05: oklch(0.75 0.21 148 / 0.05);
+    --ht-bg-a95: oklch(0.14 0.018 150 / 0.95);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Bootstrap 5.3 variable remap (core theme is compiled Bootstrap)
+   -------------------------------------------------------------------------- */
+html.hacker-terminal[data-bs-theme="dark"] {
+  --bs-body-bg: var(--ht-bg);
+  --bs-body-bg-rgb: var(--ht-bg-rgb);
+  --bs-body-color: var(--ht-fg);
+  --bs-body-color-rgb: var(--ht-fg-rgb);
+  --bs-emphasis-color: var(--ht-fg);
+  --bs-emphasis-color-rgb: var(--ht-fg-rgb);
+  --bs-secondary-color: var(--ht-muted-fg);
+  --bs-secondary-bg: var(--ht-secondary);
+  --bs-tertiary-color: var(--ht-muted-fg);
+  --bs-tertiary-bg: var(--ht-muted-bg);
+  --bs-border-color: var(--ht-border);
+  --bs-border-color-translucent: var(--ht-border);
+  --bs-primary: var(--ht-neon);
+  --bs-primary-rgb: var(--ht-neon-rgb);
+  --bs-danger: var(--ht-danger);
+  --bs-danger-rgb: var(--ht-danger-rgb);
+  --bs-info: var(--ht-teal);
+  --bs-success: var(--ht-lime);
+  --bs-link-color: var(--ht-neon);
+  --bs-link-color-rgb: var(--ht-neon-rgb);
+  --bs-link-hover-color: var(--ht-neon-hover);
+  --bs-link-hover-color-rgb: 74, 233, 129;
+  --bs-heading-color: var(--ht-fg);
+  --bs-code-color: var(--ht-neon);
+
+  /* .bg-dark (navbar) resolves to the card/panel color */
+  --bs-dark-rgb: 17, 26, 19;
+}
+
+/* Root paints the canvas; body stays transparent so the fixed background
+   layer (a negative z-index child of body) shows through behind content. */
+html.hacker-terminal {
+  background-color: var(--ht-bg);
+}
+
+html.hacker-terminal body {
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   3. Component styling
+   -------------------------------------------------------------------------- */
+.hacker-terminal h1,
+.hacker-terminal h2,
+.hacker-terminal h3,
+.hacker-terminal .navbar-brand,
+.hacker-terminal .btn,
+.hacker-terminal .badge {
+  font-family: var(--ht-font-mono);
+}
+
+.hacker-terminal h1,
+.hacker-terminal h2 {
+  color: var(--ht-fg);
+  text-shadow: 0 0 18px var(--ht-neon-a14);
+}
+
+.hacker-terminal .navbar.bg-dark {
+  border-bottom: 1px solid var(--ht-border);
+  box-shadow: 0 1px 0 var(--ht-neon-a07), 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hacker-terminal .navbar-brand {
+  color: var(--ht-neon) !important;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px var(--ht-neon-a35);
+}
+
+/* Dark is the only mode: hide core's light/dark toggle (its script isn't loaded) */
+.hacker-terminal .theme-switch {
+  display: none !important;
+}
+
+/* Cards / panels: near-opaque surfaces so content stays readable over the grid */
+.hacker-terminal .card,
+.hacker-terminal .modal-content,
+.hacker-terminal .dropdown-menu,
+.hacker-terminal .list-group-item,
+.hacker-terminal .toast,
+.hacker-terminal .offcanvas {
+  --bs-card-bg: var(--ht-card);
+  --bs-modal-bg: var(--ht-card);
+  --bs-dropdown-bg: var(--ht-card);
+  --bs-list-group-bg: var(--ht-card);
+  --bs-toast-bg: var(--ht-card);
+  --bs-offcanvas-bg: var(--ht-card);
+  background-color: var(--ht-card);
+  border-color: var(--ht-border);
+}
+
+.hacker-terminal .card {
+  box-shadow: 0 0 0 1px var(--ht-neon-a07), 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.hacker-terminal .jumbotron {
+  background-color: transparent;
+}
+
+/* Forms */
+.hacker-terminal .form-control,
+.hacker-terminal .form-select,
+.hacker-terminal .input-group-text {
+  background-color: var(--ht-muted-bg);
+  border-color: var(--ht-border);
+  color: var(--ht-fg);
+  caret-color: var(--ht-neon);
+}
+
+.hacker-terminal .form-control::placeholder {
+  color: var(--ht-muted-fg);
+}
+
+.hacker-terminal .form-control:focus,
+.hacker-terminal .form-select:focus {
+  background-color: var(--ht-muted-bg);
+  border-color: var(--ht-neon);
+  color: var(--ht-fg);
+  box-shadow: 0 0 0 0.2rem rgba(39, 224, 104, 0.25), 0 0 14px var(--ht-neon-a14);
+}
+
+/* Buttons */
+.hacker-terminal .btn-primary {
+  --bs-btn-bg: var(--ht-neon);
+  --bs-btn-border-color: var(--ht-neon);
+  --bs-btn-color: var(--ht-primary-fg);
+  --bs-btn-hover-bg: var(--ht-neon-hover);
+  --bs-btn-hover-border-color: var(--ht-neon-hover);
+  --bs-btn-hover-color: var(--ht-primary-fg);
+  --bs-btn-active-bg: var(--ht-neon-hover);
+  --bs-btn-active-border-color: var(--ht-neon-hover);
+  --bs-btn-active-color: var(--ht-primary-fg);
+  --bs-btn-disabled-bg: var(--ht-secondary);
+  --bs-btn-disabled-border-color: var(--ht-border);
+  --bs-btn-disabled-color: var(--ht-muted-fg);
+  --bs-btn-focus-shadow-rgb: var(--ht-neon-rgb);
+  box-shadow: 0 0 14px var(--ht-neon-a14);
+}
+
+.hacker-terminal .btn-primary:hover {
+  box-shadow: 0 0 20px var(--ht-neon-a35);
+}
+
+.hacker-terminal .btn-outline-secondary,
+.hacker-terminal .btn-secondary {
+  --bs-btn-bg: var(--ht-secondary);
+  --bs-btn-border-color: var(--ht-border);
+  --bs-btn-color: var(--ht-fg);
+  --bs-btn-hover-bg: var(--ht-border);
+  --bs-btn-hover-border-color: var(--ht-border);
+  --bs-btn-hover-color: var(--ht-fg);
+  --bs-btn-active-bg: var(--ht-border);
+  --bs-btn-active-color: var(--ht-fg);
+}
+
+.hacker-terminal .btn-danger {
+  --bs-btn-bg: var(--ht-danger);
+  --bs-btn-border-color: var(--ht-danger);
+}
+
+/* Tables (scoreboard) */
+.hacker-terminal .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ht-fg);
+  --bs-table-border-color: var(--ht-border);
+  --bs-table-striped-bg: rgba(39, 224, 104, 0.03);
+  --bs-table-striped-color: var(--ht-fg);
+  --bs-table-hover-bg: var(--ht-neon-a07);
+  --bs-table-hover-color: var(--ht-fg);
+}
+
+/* Tabs / pagination */
+.hacker-terminal .nav-tabs {
+  --bs-nav-tabs-border-color: var(--ht-border);
+  --bs-nav-tabs-link-active-bg: var(--ht-card);
+  --bs-nav-tabs-link-active-color: var(--ht-neon);
+  --bs-nav-tabs-link-active-border-color: var(--ht-border) var(--ht-border) var(--ht-card);
+  --bs-nav-tabs-link-hover-border-color: var(--ht-border);
+}
+
+.hacker-terminal .page-link {
+  background-color: var(--ht-card);
+  border-color: var(--ht-border);
+  color: var(--ht-neon);
+}
+
+.hacker-terminal .page-item.active .page-link {
+  background-color: var(--ht-neon);
+  border-color: var(--ht-neon);
+  color: var(--ht-primary-fg);
+}
+
+/* Alerts */
+.hacker-terminal .alert-danger {
+  --bs-alert-bg: rgba(229, 72, 77, 0.12);
+  --bs-alert-border-color: var(--ht-danger);
+  --bs-alert-color: #f3b6b8;
+}
+
+.hacker-terminal .alert-success,
+.hacker-terminal .alert-info {
+  --bs-alert-bg: var(--ht-neon-a07);
+  --bs-alert-border-color: var(--ht-neon);
+  --bs-alert-color: var(--ht-fg);
+}
+
+/* Code / pre — terminal look */
+.hacker-terminal pre,
+.hacker-terminal code {
+  font-family: var(--ht-font-mono);
+}
+
+.hacker-terminal pre {
+  background-color: var(--ht-muted-bg);
+  border: 1px solid var(--ht-border);
+  border-radius: 4px;
+  color: var(--ht-fg);
+  padding: 0.75rem 1rem;
+}
+
+.hacker-terminal ::selection {
+  background: var(--ht-neon-a35);
+  color: var(--ht-fg);
+}
+
+.hacker-terminal .footer {
+  background-color: transparent;
+}
+
+/* Challenge buttons: keep solved/unsolved distinguishable on the dark board */
+.hacker-terminal .challenge-button.solved-challenge {
+  --bs-btn-bg: var(--ht-secondary);
+  --bs-btn-border-color: var(--ht-neon);
+  --bs-btn-color: var(--ht-neon);
+}
+
+/* --------------------------------------------------------------------------
+   4. Background layer — fixed, behind everything, non-interactive
+   -------------------------------------------------------------------------- */
+#cyber-grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#cyber-grid-bg > * {
+  position: absolute;
+}
+
+/* 4.1 — 3D perspective floor (bottom 46% of the viewport) */
+.cyber-bg__floor-wrap {
+  top: 54%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  perspective: 460px;
+  perspective-origin: 50% 0%;
+  overflow: hidden;
+}
+
+.cyber-bg__floor {
+  position: absolute;
+  top: 0;
+  left: -70%;
+  right: -70%;
+  height: 400%;
+  transform-origin: 50% 0;
+  transform: rotateX(62deg) translateY(0);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--ht-neon-a30) 0,
+      var(--ht-neon-a30) 1.5px,
+      transparent 1.5px,
+      transparent var(--ht-cell)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--ht-neon-a30) 0,
+      var(--ht-neon-a30) 1.5px,
+      transparent 1.5px,
+      transparent var(--ht-cell)
+    );
+  animation: ht-floor-scroll var(--ht-floor-duration) linear infinite;
+  will-change: transform;
+}
+
+/* Translating by exactly one cell makes the loop seamless; transform-only
+   keeps it on the compositor. */
+@keyframes ht-floor-scroll {
+  from {
+    transform: rotateX(62deg) translateY(calc(-1 * var(--ht-cell)));
+  }
+  to {
+    transform: rotateX(62deg) translateY(0);
+  }
+}
+
+/* Distance fog: far grid melts into the horizon */
+.cyber-bg__fog {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--ht-bg-a95) 0%,
+    transparent 65%
+  );
+}
+
+/* 4.2 — Glowing horizon line */
+.cyber-bg__horizon {
+  top: 54%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ht-neon-a55) 50%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 22px var(--ht-neon-a35),
+    0 0 80px var(--ht-neon-a14);
+}
+
+/* 4.3 — Sky grid, fading out toward the horizon */
+.cyber-bg__sky {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54%;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--ht-neon-a07) 0,
+      var(--ht-neon-a07) 1px,
+      transparent 1px,
+      transparent 44px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--ht-neon-a07) 0,
+      var(--ht-neon-a07) 1px,
+      transparent 1px,
+      transparent 44px
+    );
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+/* 4.4 — Ambient glow centered on the horizon + faint top wash */
+.cyber-bg__glow {
+  inset: 0;
+  background:
+    radial-gradient(55% 32% at 50% 54%, var(--ht-neon-a14) 0%, transparent 70%),
+    linear-gradient(to bottom, var(--ht-neon-a05) 0%, transparent 30%);
+}
+
+/* 4.5 — CRT scanlines */
+.cyber-bg__scanlines {
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.14) 0,
+    rgba(0, 0, 0, 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.4;
+}
+
+/* 4.6 — Scan beam sweeping down the viewport */
+.cyber-bg__beam {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--ht-neon-a40);
+  box-shadow: 0 0 12px var(--ht-neon-a30), 0 0 32px var(--ht-neon-a14);
+  opacity: 0;
+  animation: ht-beam-sweep var(--ht-beam-duration) linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes ht-beam-sweep {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100vh, 0);
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Admin Theme Settings toggles (classes set once from window.init)
+   -------------------------------------------------------------------------- */
+.ht-no-bg #cyber-grid-bg,
+.ht-no-floor .cyber-bg__floor-wrap,
+.ht-no-sky .cyber-bg__sky,
+.ht-no-horizon .cyber-bg__horizon,
+.ht-no-glow .cyber-bg__glow,
+.ht-no-scanlines .cyber-bg__scanlines,
+.ht-no-beam .cyber-bg__beam {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. Reduced motion: freeze the floor, drop the beam
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cyber-bg__floor {
+    animation: none;
+  }
+
+  .cyber-bg__beam {
+    display: none;
+  }
+}
